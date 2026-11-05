@@ -1809,7 +1809,7 @@ body {
 
 .badge-pending {
   background-color: #fef3c7;
-  color: #b45309;
+  color: #92400e;
   border: 1px solid #fde68a;
   animation: pulseLight 2s infinite ease-in-out;
 }
