@@ -1,7 +1,6 @@
-import React from "react";
-import { FolderOpen, LogOut, User, Menu, ShieldCheck } from "./icons";
+import { FolderOpen, LogOut, Menu, X } from "./icons";
 
-export function Navbar({ user, onLogout, onOpenProfile, onToggleSidebar }) {
+export function Navbar({ user, onLogout, onOpenProfile, onToggleSidebar, isSidebarOpen }) {
   const getRoleBadgeClass = (role) => {
     switch (role) {
       case "ADMIN":
@@ -16,8 +15,15 @@ export function Navbar({ user, onLogout, onOpenProfile, onToggleSidebar }) {
   return (
     <header className="app-navbar">
       <div className="navbar-left">
-        <button className="navbar-menu-btn" onClick={onToggleSidebar} aria-label="Toggle menu">
-          <Menu size={20} />
+        <button
+          id="navbar-menu-btn"
+          className="navbar-menu-btn"
+          onClick={onToggleSidebar}
+          aria-label={isSidebarOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={isSidebarOpen}
+          aria-controls="workspace-sidebar"
+        >
+          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
         <div className="navbar-brand">
           <div className="brand-icon">
