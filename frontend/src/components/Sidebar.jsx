@@ -1,14 +1,13 @@
-import React from "react";
+import { useEffect } from "react";
 import { 
   FileText, 
   BarChart3, 
   Share2, 
   FolderOpen, 
-  Tag, 
   Users, 
   ShieldCheck, 
   Plus,
-  Clock,
+  X,
   FileCheck
 } from "./icons";
 
@@ -32,12 +31,59 @@ export function Sidebar({ currentView, setCurrentView, user, onOpenUpload, isOpe
     if (onCloseMobile) onCloseMobile();
   };
 
+  const handleUploadClick = () => {
+    onOpenUpload();
+    onCloseMobile?.();
+  };
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onCloseMobile?.();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onCloseMobile]);
+
   return (
     <>
-      {isOpen && <div className="sidebar-mobile-overlay" onClick={onCloseMobile} />}
-      <aside className={`app-sidebar ${isOpen ? "sidebar-open" : ""}`}>
+      {isOpen && (
+        <button
+          type="button"
+          className="sidebar-mobile-overlay"
+          onClick={onCloseMobile}
+          aria-label="Close navigation menu"
+          tabIndex="-1"
+        />
+      )}
+      <aside
+        id="workspace-sidebar"
+        className={`app-sidebar ${isOpen ? "sidebar-open" : ""}`}
+        aria-label="Workspace navigation"
+      >
+        <div className="sidebar-mobile-header">
+          <span className="sidebar-mobile-title">Navigation</span>
+          <button
+            type="button"
+            className="sidebar-close-btn"
+            onClick={onCloseMobile}
+            aria-label="Close navigation menu"
+          >
+            <X size={20} />
+          </button>
+        </div>
         <div className="sidebar-upload-wrap">
-          <button className="btn btn-primary btn-upload-doc" onClick={onOpenUpload}>
+          <button className="btn btn-primary btn-upload-doc" onClick={handleUploadClick}>
             <Plus size={18} />
             <span>New Document</span>
           </button>

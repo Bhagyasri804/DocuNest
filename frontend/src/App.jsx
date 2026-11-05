@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import "./App.css";
 import { 
   Search, 
@@ -45,6 +45,24 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const closeSidebar = useCallback(() => {
+    setSidebarOpen(false);
+    document.getElementById("navbar-menu-btn")?.focus();
+  }, []);
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((open) => !open);
+  }, []);
+
+  useEffect(() => {
+    const desktopMediaQuery = window.matchMedia("(min-width: 1025px)");
+    const closeSidebarOnDesktop = () => {
+      if (desktopMediaQuery.matches) setSidebarOpen(false);
+    };
+
+    closeSidebarOnDesktop();
+    desktopMediaQuery.addEventListener("change", closeSidebarOnDesktop);
+    return () => desktopMediaQuery.removeEventListener("change", closeSidebarOnDesktop);
+  }, []);
   
   // Data state
   const [documents, setDocuments] = useState([]);
@@ -246,7 +264,8 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
         user={currentUser}
         onLogout={onLogout}
         onOpenProfile={() => setProfileOpen(true)}
-        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+        onToggleSidebar={toggleSidebar}
+        isSidebarOpen={sidebarOpen}
       />
 
       <div className="workspace-body">
@@ -263,7 +282,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
           user={currentUser}
           onOpenUpload={() => setUploadOpen(true)}
           isOpen={sidebarOpen}
-          onCloseMobile={() => setSidebarOpen(false)}
+          onCloseMobile={closeSidebar}
           pendingCount={pendingApprovalsCount}
         />
 
