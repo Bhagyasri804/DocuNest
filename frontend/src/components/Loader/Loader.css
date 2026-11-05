@@ -1,0 +1,57 @@
+.loader {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  color: #526078;
+  font-size: 0.9rem;
+}
+
+.loader__spinner {
+  display: inline-block;
+  flex: 0 0 auto;
+  border: 3px solid #dce4f7;
+  border-top-color: #315bea;
+  border-radius: 50%;
+  animation: loader-spin 750ms linear infinite;
+}
+
+.loader__text:empty {
+  display: none;
+}
+
+.loader--small .loader__spinner {
+  width: 1rem;
+  height: 1rem;
+  border-width: 2px;
+}
+
+.loader--medium .loader__spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.loader--large .loader__spinner {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-width: 4px;
+}
+
+.loader--small {
+  font-size: 0.8rem;
+}
+
+.loader--large {
+  font-size: 1rem;
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader__spinner {
+    animation-duration: 1.8s;
+  }
+}
