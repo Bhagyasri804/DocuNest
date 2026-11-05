@@ -223,6 +223,13 @@ export const ArrowRight = createIcon(
   </>
 );
 
+export const ArrowUp = createIcon(
+  <>
+    <path d="M12 19V5" />
+    <path d="m5 12 7-7 7 7" />
+  </>
+);
+
 export const Menu = createIcon(
   <>
     <line x1="4" x2="20" y1="12" y2="12" />
