@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { User, X, Key, ShieldCheck, CheckCircle2, AlertTriangle } from "./icons";
+import { PasswordInput } from "./PasswordInput";
 import { api, setCurrentUser } from "../api";
 
 export function ProfileModal({ isOpen, user, onClose, onUserUpdated, onSuccess, onError }) {
@@ -121,9 +122,7 @@ export function ProfileModal({ isOpen, user, onClose, onUserUpdated, onSuccess, 
           </h4>
           <div className="form-group">
             <label className="form-label">Current Password</label>
-            <input
-              type="password"
-              className="form-input"
+            <PasswordInput
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               required
@@ -132,9 +131,7 @@ export function ProfileModal({ isOpen, user, onClose, onUserUpdated, onSuccess, 
           <div className="form-row">
             <div className="form-group" style={{ flex: 1 }}>
               <label className="form-label">New Password</label>
-              <input
-                type="password"
-                className="form-input"
+              <PasswordInput
                 placeholder="Min 8 characters, letter & number"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -143,9 +140,7 @@ export function ProfileModal({ isOpen, user, onClose, onUserUpdated, onSuccess, 
             </div>
             <div className="form-group" style={{ flex: 1 }}>
               <label className="form-label">Confirm New Password</label>
-              <input
-                type="password"
-                className="form-input"
+              <PasswordInput
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required

@@ -191,6 +191,15 @@ export const Eye = createIcon(
   </>
 );
 
+export const EyeOff = createIcon(
+  <>
+    <path d="m3 3 18 18" />
+    <path d="M10.58 10.58a2 2 0 0 0 2.83 2.83" />
+    <path d="M9.88 5.09A10.94 10.94 0 0 1 12 4.9c7 0 10 7.1 10 7.1a13.16 13.16 0 0 1-3.13 4.24" />
+    <path d="M6.61 6.61C3.68 8.29 2 12 2 12s3 7.1 10 7.1a10.94 10.94 0 0 0 2.12-.2" />
+  </>
+);
+
 export const RefreshCw = createIcon(
   <>
     <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
