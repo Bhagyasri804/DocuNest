@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FolderOpen, Lock, AlertTriangle, CheckCircle2 } from "../components/icons";
+import { PasswordInput } from "../components/PasswordInput";
 import { Link, useNavigate } from "../router";
 import { api, setToken, setCurrentUser } from "../api";
 
@@ -96,9 +97,7 @@ export function RegisterPage({ onLoginSuccess }) {
 
           <div className="form-group">
             <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-input"
+            <PasswordInput
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
