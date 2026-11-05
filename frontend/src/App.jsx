@@ -12,7 +12,8 @@ import {
   AlertTriangle,
   Clock,
   FileCheck,
-  ArrowUp
+  ArrowUp,
+  X
 } from "./components/icons";
 import { Router, Routes, Route, useNavigate, useLocation } from "./router";
 import { api, getCurrentUser, setCurrentUser, setToken } from "./api";
@@ -348,6 +349,16 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                     value={searchQuery}
                     onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                   />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      className="search-clear-btn"
+                      aria-label="Clear search"
+                      onClick={() => { setSearchQuery(""); setCurrentPage(1); }}
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
                 </div>
 
                 <div className="filter-select-wrap">
@@ -455,6 +466,16 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                     value={searchQuery}
                     onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                   />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      className="search-clear-btn"
+                      aria-label="Clear search"
+                      onClick={() => { setSearchQuery(""); setCurrentPage(1); }}
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
                 </div>
                 <div className="filter-select-wrap">
                   <label className="filter-label" htmlFor="documents-sort-order">Sort by:</label>
