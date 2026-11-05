@@ -6,9 +6,11 @@ validateEnv();
 const { testDatabaseConnection } = require("./config/db");
 const notFoundMiddleware = require("./middleware/notFoundMiddleware");
 const errorMiddleware = require("./middleware/errorMiddleware");
+const requestLogger = require("./middleware/requestLogger");
 
 const app = express();
 
+app.use(requestLogger);
 app.use(express.json());
 
 // Health check route
