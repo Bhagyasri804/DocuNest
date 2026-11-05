@@ -50,6 +50,10 @@ function errorMiddleware(error, req, res, next) {
         response.path = error.path;
     }
 
+    if (statusCode === 400 && Array.isArray(error.errors)) {
+        response.errors = error.errors;
+    }
+
     if (process.env.NODE_ENV === "development") {
         response.stack = error.stack;
     } else {
