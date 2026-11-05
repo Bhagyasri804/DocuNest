@@ -334,3 +334,33 @@ export const Tag = createIcon(
     <path d="M7 7h.01" />
   </>
 );
+
+export const CheckCircle = createIcon(
+  <>
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+  </>
+);
+
+export const XCircle = createIcon(
+  <>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="15" x2="9" y1="9" y2="15" />
+    <line x1="9" x2="15" y1="9" y2="15" />
+  </>
+);
+
+export const FileCheck = createIcon(
+  <>
+    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+    <path d="m9 15 2 2 4-4" />
+  </>
+);
+
+export const SendHorizontal = createIcon(
+  <>
+    <path d="m3 3 3 9-3 9 19-9Z" />
+    <path d="M6 12h16" />
+  </>
+);

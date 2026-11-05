@@ -104,6 +104,13 @@ export const api = {
   toggleFavorite: (id) => request(`/documents/${id}/favorite`, { method: "POST" }),
   getDownloadUrl: (id) => `${API_BASE_URL}/documents/${id}/download`,
 
+  // Document Approvals Workflow
+  submitForApproval: (docId, comments = "") => request(`/approvals/${docId}/submit`, { method: "POST", body: { comments } }),
+  approveDocument: (docId, comments = "") => request(`/approvals/${docId}/approve`, { method: "POST", body: { comments } }),
+  rejectDocument: (docId, rejection_reason = "") => request(`/approvals/${docId}/reject`, { method: "POST", body: { rejection_reason } }),
+  getPendingApprovals: () => request("/approvals/pending"),
+  getDocumentApprovals: (docId) => request(`/approvals/${docId}/history`),
+
   // Categories & Tags
   getCategories: () => request("/categories"),
   createCategory: (data) => request("/categories", { method: "POST", body: data }),

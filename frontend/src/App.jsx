@@ -10,7 +10,8 @@ import {
   Star, 
   Filter, 
   AlertTriangle,
-  Clock
+  Clock,
+  FileCheck
 } from "./components/icons";
 import { Router, Routes, Route, useNavigate, useLocation } from "./router";
 import { api, getCurrentUser, setCurrentUser, setToken } from "./api";
@@ -26,6 +27,8 @@ import { VersionModal } from "./components/VersionModal";
 import { CategoriesModal } from "./components/CategoriesModal";
 import { ProfileModal } from "./components/ProfileModal";
 import { ConfirmModal } from "./components/ConfirmModal";
+import { ApprovalModal } from "./components/ApprovalModal";
+import { ApprovalsView } from "./components/ApprovalsView";
 import { Toast } from "./components/Toast";
 import { Pagination } from "./components/Pagination";
 import { UserManagementView } from "./components/UserManagementView";
@@ -46,6 +49,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
   const [categories, setCategories] = useState([]);
   const [sharedDocs, setSharedDocs] = useState([]);
   const [expiringDocs, setExpiringDocs] = useState([]);
+  const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
   const [loading, setLoading] = useState(true);
   
   // Search & Filters
@@ -60,6 +64,10 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   
+  // Approval modal state
+  const [approvalModalDoc, setApprovalModalDoc] = useState(null);
+  const [approvalModalMode, setApprovalModalMode] = useState("submit"); // "submit" | "review"
+
   const [activeDetailDocId, setActiveDetailDocId] = useState(null);
   const [activeShareDoc, setActiveShareDoc] = useState(null);
   const [activeVersionDoc, setActiveVersionDoc] = useState(null);
@@ -82,6 +90,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
   useEffect(() => {
     loadCategories();
     loadExpiring();
+    loadPendingCount();
   }, []);
 
   useEffect(() => {
@@ -91,6 +100,17 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
       loadSharedWithMe();
     }
   }, [currentView, searchQuery, selectedCategory, onlyFavorites, currentPage]);
+
+  const loadPendingCount = async () => {
+    if (currentUser?.role === "MANAGER" || currentUser?.role === "ADMIN") {
+      try {
+        const res = await api.getPendingApprovals();
+        setPendingApprovalsCount(res.data ? res.data.length : 0);
+      } catch (err) {
+        // ignore
+      }
+    }
+  };
 
   const loadCategories = async () => {
     try {
@@ -157,6 +177,16 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
     window.open(api.getDownloadUrl(doc.id), "_blank");
   };
 
+  const handleOpenSubmitApproval = (doc) => {
+    setApprovalModalDoc(doc);
+    setApprovalModalMode("submit");
+  };
+
+  const handleOpenReviewApproval = (doc, initialDecision = "approve") => {
+    setApprovalModalDoc(doc);
+    setApprovalModalMode("review");
+  };
+
   const confirmDelete = async () => {
     if (!docToDelete) return;
     setDeleting(true);
@@ -165,6 +195,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
       showSuccess(`'${docToDelete.title}' has been deleted.`);
       setDocToDelete(null);
       loadDocuments();
+      loadPendingCount();
     } catch (err) {
       showError(err.message || "Failed to delete document.");
     } finally {
@@ -196,6 +227,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
           onOpenUpload={() => setUploadOpen(true)}
           isOpen={sidebarOpen}
           onCloseMobile={() => setSidebarOpen(false)}
+          pendingCount={pendingApprovalsCount}
         />
 
         <main className="workspace-main">
@@ -205,7 +237,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
               <div className="view-header">
                 <div>
                   <h2>Workspace Dashboard</h2>
-                  <p className="view-subtitle">Overview of your documents, recent revisions, and shared assets.</p>
+                  <p className="view-subtitle">Overview of your documents, recent revisions, and approval statuses.</p>
                 </div>
                 <div className="view-header-actions">
                   <button className="btn btn-primary" onClick={() => setUploadOpen(true)}>
@@ -302,6 +334,8 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                         onVersions={(d) => setActiveVersionDoc(d)}
                         onToggleFavorite={handleToggleFavorite}
                         onDelete={(d) => setDocToDelete(d)}
+                        onSubmitApproval={handleOpenSubmitApproval}
+                        onReviewApproval={handleOpenReviewApproval}
                       />
                     ))}
                   </div>
@@ -322,7 +356,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
               <div className="view-header">
                 <div>
                   <h2>All Documents</h2>
-                  <p className="view-subtitle">Browse, filter, and organize all organizational documents.</p>
+                  <p className="view-subtitle">Browse, filter, submit, and manage all organizational documents.</p>
                 </div>
                 <div className="view-header-actions">
                   <button className="btn btn-primary" onClick={() => setUploadOpen(true)}>
@@ -385,6 +419,8 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                         onVersions={(d) => setActiveVersionDoc(d)}
                         onToggleFavorite={handleToggleFavorite}
                         onDelete={(d) => setDocToDelete(d)}
+                        onSubmitApproval={handleOpenSubmitApproval}
+                        onReviewApproval={handleOpenReviewApproval}
                       />
                     ))}
                   </div>
@@ -397,6 +433,15 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                 </>
               )}
             </div>
+          )}
+
+          {/* View: Document Approvals (Manager / Admin) */}
+          {currentView === "approvals" && (
+            <ApprovalsView
+              onReviewDoc={handleOpenReviewApproval}
+              onViewDoc={(d) => setActiveDetailDocId(d.id)}
+              onError={showError}
+            />
           )}
 
           {/* View: Shared With Me */}
@@ -431,6 +476,8 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                       onVersions={(d) => setActiveVersionDoc(d)}
                       onToggleFavorite={handleToggleFavorite}
                       onDelete={(d) => setDocToDelete(d)}
+                      onSubmitApproval={handleOpenSubmitApproval}
+                      onReviewApproval={handleOpenReviewApproval}
                     />
                   ))}
                 </div>
@@ -475,6 +522,21 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
         onClose={() => setActiveDetailDocId(null)}
         onDownload={handleDownload}
         onEdit={(d) => { setActiveDetailDocId(null); setEditDoc(d); }}
+        onSubmitApproval={(d) => { setActiveDetailDocId(null); handleOpenSubmitApproval(d); }}
+        onReviewApproval={(d) => { setActiveDetailDocId(null); handleOpenReviewApproval(d); }}
+      />
+
+      <ApprovalModal
+        isOpen={Boolean(approvalModalDoc)}
+        mode={approvalModalMode}
+        doc={approvalModalDoc}
+        onClose={() => setApprovalModalDoc(null)}
+        onSuccess={(msg) => {
+          showSuccess(msg);
+          loadDocuments();
+          loadPendingCount();
+        }}
+        onError={showError}
       />
 
       <ShareModal
