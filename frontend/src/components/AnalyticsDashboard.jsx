@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BarChart3, FileText, HardDrive, Users, FolderOpen, Clock } from "./icons";
 import { api } from "../api";
-
-function formatBytes(bytes) {
-  if (!bytes || bytes === 0) return "0 MB";
-  const mb = bytes / (1024 * 1024);
-  if (mb < 1024) return `${mb.toFixed(1)} MB`;
-  return `${(mb / 1024).toFixed(2)} GB`;
-}
+import { formatFileSize } from "../utils/formatFileSize";
 
 export function AnalyticsDashboard({ currentUser, onError }) {
   const [data, setData] = useState(null);
@@ -65,7 +59,7 @@ export function AnalyticsDashboard({ currentUser, onError }) {
           </div>
           <div className="kpi-info">
             <span className="kpi-label">Storage Utilized</span>
-            <span className="kpi-value">{formatBytes(totalSizeBytes)}</span>
+            <span className="kpi-value">{formatFileSize(totalSizeBytes)}</span>
           </div>
         </div>
 

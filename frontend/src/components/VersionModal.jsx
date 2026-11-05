@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { History, X, Upload, Download, RefreshCw, FileText } from "./icons";
 import { api } from "../api";
+import { formatFileSize } from "../utils/formatFileSize";
 
 export function VersionModal({ isOpen, doc, currentUser, onClose, onSuccess, onError }) {
   const [versions, setVersions] = useState([]);
@@ -144,7 +145,7 @@ export function VersionModal({ isOpen, doc, currentUser, onClose, onSuccess, onE
                       <span>•</span>
                       <span>{new Date(v.created_at).toLocaleString()}</span>
                       <span>•</span>
-                      <span>{(v.file_size / (1024 * 1024)).toFixed(2)} MB</span>
+                      <span>{formatFileSize(v.file_size)}</span>
                     </div>
                   </div>
                   <div className="version-actions-col">
