@@ -1,5 +1,8 @@
 const express = require("express");
 require("dotenv").config();
+const validateEnv = require("./config/validateEnv");
+validateEnv();
+
 const { testDatabaseConnection } = require("./config/db");
 const notFoundMiddleware = require("./middleware/notFoundMiddleware");
 const errorMiddleware = require("./middleware/errorMiddleware");
@@ -15,7 +18,7 @@ app.use("/api/health", healthRoutes);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT);
 
 app.listen(PORT, () => {
     console.log(`DocuNest server running on port ${PORT}`);
