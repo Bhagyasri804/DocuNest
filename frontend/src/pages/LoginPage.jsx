@@ -25,7 +25,8 @@ export function LoginPage({ onLoginSuccess }) {
       setToken(res.data.token);
       setCurrentUser(res.data.user);
       if (onLoginSuccess) onLoginSuccess(res.data.user);
-      navigate("/dashboard");
+      const documentPath = window.location.pathname.match(/^\/documents\/(\d+)\/?$/);
+      navigate(documentPath ? `/documents/${documentPath[1]}` : "/dashboard");
     } catch (err) {
       setError(err.message || "Invalid email or password.");
     } finally {
