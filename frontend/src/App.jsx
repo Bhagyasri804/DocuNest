@@ -394,7 +394,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                     className={`cat-chip cat-fav-chip ${onlyFavorites ? "active" : ""}`}
                     onClick={() => { setOnlyFavorites(!onlyFavorites); setCurrentPage(1); }}
                   >
-                    <Star size={14} fill={onlyFavorites ? "#f59e0b" : "none"} /> Favorites
+                    <Star size={14} fill={onlyFavorites ? "#ffffff" : "none"} /> Favorites
                   </button>
                 </div>
               </div>
@@ -506,7 +506,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                   className={`btn btn-secondary btn-sm ${onlyFavorites ? "active" : ""}`}
                   onClick={() => { setOnlyFavorites(!onlyFavorites); setCurrentPage(1); }}
                 >
-                  <Star size={14} fill={onlyFavorites ? "#f59e0b" : "none"} /> Favorites Only
+                  <Star size={14} fill={onlyFavorites ? "#16a34a" : "none"} /> Favorites Only
                 </button>
               </div>
 
