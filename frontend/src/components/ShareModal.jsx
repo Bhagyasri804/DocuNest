@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Share2, X, Trash2, ShieldCheck, User } from "./icons";
+import { Share2, X, Trash2, Copy } from "./icons";
 import { api } from "../api";
 
 export function ShareModal({ isOpen, doc, onClose, onSuccess, onError }) {
@@ -8,6 +8,7 @@ export function ShareModal({ isOpen, doc, onClose, onSuccess, onError }) {
   const [permission, setPermission] = useState("VIEW");
   const [loading, setLoading] = useState(true);
   const [sharing, setSharing] = useState(false);
+  const [copying, setCopying] = useState(false);
 
   useEffect(() => {
     if (isOpen && doc) {
@@ -58,6 +59,44 @@ export function ShareModal({ isOpen, doc, onClose, onSuccess, onError }) {
       loadShares();
     } catch (err) {
       onError(err.message || "Failed to revoke access.");
+    }
+  };
+
+  const handleCopyLink = async () => {
+    if (!doc?.id || copying) return;
+
+    setCopying(true);
+    try {
+      const shareUrl = new URL(
+        `/documents/${encodeURIComponent(doc.id)}`,
+        window.location.origin,
+      ).toString();
+
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = shareUrl;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+          if (!document.execCommand("copy")) {
+            throw new Error("Clipboard copy command was rejected.");
+          }
+        } finally {
+          textArea.remove();
+        }
+      }
+
+      onSuccess("Share link copied successfully!");
+    } catch {
+      onError("Could not copy the share link. Check clipboard permissions and try again.");
+    } finally {
+      setCopying(false);
     }
   };
 
@@ -164,7 +203,18 @@ export function ShareModal({ isOpen, doc, onClose, onSuccess, onError }) {
           )}
         </div>
 
-        <div className="modal-actions" style={{ marginTop: 24 }}>
+        <div className="modal-actions" style={{ marginTop: 24, flexWrap: "wrap" }}>
+          <p style={{ marginRight: "auto", color: "#64748b", fontSize: "0.825rem", flex: "1 1 200px" }}>
+            Only users with document access can open this link.
+          </p>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleCopyLink}
+            disabled={copying}
+          >
+            <Copy size={16} /> {copying ? "Copying..." : "Copy Link"}
+          </button>
           <button type="button" className="btn btn-secondary" onClick={onClose}>
             Close
           </button>

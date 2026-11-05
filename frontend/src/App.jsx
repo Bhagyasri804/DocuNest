@@ -41,6 +41,8 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 
 function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [currentView, setCurrentView] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   
@@ -95,6 +97,8 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
   const [approvalModalMode, setApprovalModalMode] = useState("submit"); // "submit" | "review"
 
   const [activeDetailDocId, setActiveDetailDocId] = useState(null);
+  const linkedDocumentId = pathname.match(/^\/documents\/(\d+)\/?$/)?.[1] || null;
+  const selectedDetailDocId = linkedDocumentId || activeDetailDocId;
   const [activeShareDoc, setActiveShareDoc] = useState(null);
   const [activeVersionDoc, setActiveVersionDoc] = useState(null);
   const [editDoc, setEditDoc] = useState(null);
@@ -201,6 +205,13 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
 
   const handleDownload = (doc) => {
     window.open(api.getDownloadUrl(doc.id), "_blank");
+  };
+
+  const closeDocumentDetail = () => {
+    setActiveDetailDocId(null);
+    if (linkedDocumentId) {
+      navigate("/dashboard");
+    }
   };
 
   const handleOpenSubmitApproval = (doc) => {
@@ -567,14 +578,14 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
       />
 
       <DocumentDetailModal
-        isOpen={Boolean(activeDetailDocId)}
-        docId={activeDetailDocId}
+        isOpen={Boolean(selectedDetailDocId)}
+        docId={selectedDetailDocId}
         currentUser={currentUser}
-        onClose={() => setActiveDetailDocId(null)}
+        onClose={closeDocumentDetail}
         onDownload={handleDownload}
-        onEdit={(d) => { setActiveDetailDocId(null); setEditDoc(d); }}
-        onSubmitApproval={(d) => { setActiveDetailDocId(null); handleOpenSubmitApproval(d); }}
-        onReviewApproval={(d) => { setActiveDetailDocId(null); handleOpenReviewApproval(d); }}
+        onEdit={(d) => { closeDocumentDetail(); setEditDoc(d); }}
+        onSubmitApproval={(d) => { closeDocumentDetail(); handleOpenSubmitApproval(d); }}
+        onReviewApproval={(d) => { closeDocumentDetail(); handleOpenReviewApproval(d); }}
       />
 
       <ApprovalModal
@@ -686,6 +697,20 @@ export default function App() {
               />
             ) : (
               <RegisterPage onLoginSuccess={handleLoginSuccess} />
+            )
+          }
+        />
+        <Route
+          path="/documents"
+          element={
+            currentUser ? (
+              <AuthenticatedWorkspace
+                currentUser={currentUser}
+                onUserChange={setCurrentUser}
+                onLogout={handleLogout}
+              />
+            ) : (
+              <LoginPage onLoginSuccess={handleLoginSuccess} />
             )
           }
         />
