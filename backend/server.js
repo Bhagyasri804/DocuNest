@@ -54,6 +54,10 @@ app.use("/api/shares", shareRoutes);
 app.use("/api/versions", versionRoutes);
 app.use("/api/comments", commentRoutes);
 
+// Document Approvals Workflow
+const approvalRoutes = require("./routes/approvalRoutes");
+app.use("/api/approvals", approvalRoutes);
+
 // Audit Logs & Analytics
 const auditRoutes = require("./routes/auditRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");

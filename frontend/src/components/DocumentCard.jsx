@@ -8,10 +8,14 @@ import {
   Trash2, 
   Edit3, 
   Star, 
-  Eye,
-  Calendar,
-  User,
-  HardDrive
+  Eye, 
+  Calendar, 
+  User, 
+  HardDrive,
+  SendHorizontal,
+  CheckCircle,
+  XCircle,
+  FileCheck
 } from "./icons";
 
 function formatBytes(bytes) {
@@ -37,17 +41,36 @@ export function DocumentCard({
   onShare,
   onVersions,
   onToggleFavorite,
-  onDownload
+  onDownload,
+  onSubmitApproval,
+  onReviewApproval
 }) {
   const isOwner = currentUser?.id === doc.user_id;
   const isAdmin = currentUser?.role === "ADMIN";
+  const isManager = currentUser?.role === "MANAGER";
+  const canReview = isAdmin || isManager;
   const canManage = isOwner || isAdmin;
   const permission = doc.access_permission || doc.permission || (canManage ? "OWNER" : "VIEW");
   const canEdit = canManage || permission === "EDIT";
   const canDownload = canManage || permission === "DOWNLOAD" || permission === "EDIT";
 
+  const approvalStatus = doc.approval_status || "DRAFT";
+
+  const getApprovalBadge = () => {
+    switch (approvalStatus) {
+      case "APPROVED":
+        return <span className="doc-approval-badge badge-approved" title="Approved">Approved</span>;
+      case "PENDING":
+        return <span className="doc-approval-badge badge-pending" title="Pending Manager/Admin Review">Pending Approval</span>;
+      case "REJECTED":
+        return <span className="doc-approval-badge badge-rejected" title="Rejected - Click for details">Rejected</span>;
+      default:
+        return <span className="doc-approval-badge badge-draft" title="Draft - Not submitted">Draft</span>;
+    }
+  };
+
   return (
-    <div className="document-card">
+    <div className={`document-card ${approvalStatus === "PENDING" ? "doc-card-pending" : ""}`}>
       <div className="doc-card-header">
         <div className="doc-type-icon">
           <FileText size={22} color="#2563eb" />
@@ -55,6 +78,7 @@ export function DocumentCard({
         <div className="doc-badges">
           <span className="doc-category-badge">{doc.category || "General"}</span>
           <span className="doc-version-badge">v{doc.version || 1}</span>
+          {getApprovalBadge()}
         </div>
         <button
           className={`btn-favorite ${doc.is_favorite ? "is-favorite" : ""}`}
@@ -71,6 +95,12 @@ export function DocumentCard({
         </h4>
         {doc.description && (
           <p className="doc-description">{doc.description}</p>
+        )}
+
+        {approvalStatus === "REJECTED" && (
+          <div className="doc-rejection-banner">
+            <span style={{ fontWeight: 600 }}>Revision Required:</span> Document was rejected. Click to view reason & re-submit.
+          </div>
         )}
 
         {doc.tags && doc.tags.length > 0 && (
@@ -101,7 +131,7 @@ export function DocumentCard({
 
       <div className="doc-card-footer">
         <div className="doc-actions-left">
-          <button className="btn-icon" onClick={() => onView(doc)} title="View Details & Comments">
+          <button className="btn-icon" onClick={() => onView(doc)} title="View Details, Approval & Comments">
             <Eye size={16} />
           </button>
           {canDownload && (
@@ -120,6 +150,30 @@ export function DocumentCard({
         </div>
 
         <div className="doc-actions-right">
+          {/* Submit for Approval Action for Owner */}
+          {(isOwner || isAdmin) && (approvalStatus === "DRAFT" || approvalStatus === "REJECTED") && onSubmitApproval && (
+            <button
+              className="btn btn-secondary btn-sm btn-submit-approval"
+              onClick={() => onSubmitApproval(doc)}
+              title="Submit this document for approval"
+            >
+              <SendHorizontal size={14} />
+              <span>Submit</span>
+            </button>
+          )}
+
+          {/* Review Action for Manager/Admin if Pending */}
+          {canReview && approvalStatus === "PENDING" && onReviewApproval && (
+            <button
+              className="btn btn-primary btn-sm btn-review-approval"
+              onClick={() => onReviewApproval(doc)}
+              title="Review approval request"
+            >
+              <FileCheck size={14} />
+              <span>Review</span>
+            </button>
+          )}
+
           {canEdit && (
             <button className="btn-icon" onClick={() => onEdit(doc)} title="Edit Metadata">
               <Edit3 size={16} />

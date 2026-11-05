@@ -308,6 +308,10 @@ router.get("/:id", async (req, res, next) => {
         const [versions] = await pool.query("SELECT COUNT(*) as count FROM document_versions WHERE document_id = ?", [id]);
         doc.versions_count = versions[0].count;
 
+        // Fetch latest approval record
+        const [latestApproval] = await pool.query("SELECT da.*, rev.name as reviewer_name, rev.email as reviewer_email FROM document_approvals da LEFT JOIN users rev ON rev.id = da.reviewed_by WHERE da.document_id = ? ORDER BY da.id DESC LIMIT 1", [id]);
+        doc.latest_approval = latestApproval.length > 0 ? latestApproval[0] : null;
+
         return res.json(successResponse("Document details retrieved.", doc));
     } catch (err) {
         next(err);

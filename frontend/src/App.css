@@ -1785,3 +1785,240 @@ body {
     width: 100%;
   }
 }
+
+
+/* ==========================================================================
+   DOCUMENT APPROVAL WORKFLOW
+   ========================================================================== */
+
+.doc-approval-badge {
+  display: inline-block;
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge-approved {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  animation: pulseLight 2s infinite ease-in-out;
+}
+
+.badge-rejected {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.badge-draft {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+@keyframes pulseLight {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+.doc-card-pending {
+  border-left: 3px solid #f59e0b;
+}
+
+.doc-rejection-banner {
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: var(--radius-sm);
+  color: #b91c1c;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.btn-submit-approval {
+  border-color: #bfdbfe;
+  color: #2563eb;
+  background-color: #eff6ff;
+  font-weight: 600;
+}
+
+.btn-submit-approval:hover {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.btn-review-approval {
+  background-color: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.btn-review-approval:hover {
+  background-color: #15803d;
+  border-color: #15803d;
+}
+
+.sidebar-count-badge {
+  background-color: #f59e0b;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.approval-modal-doc-summary {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-bottom: 18px;
+}
+
+.decision-option-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background-color: #ffffff;
+}
+
+.decision-option-card:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.decision-selected-approve {
+  border-color: #16a34a !important;
+  background-color: #f0fdf4 !important;
+  color: #15803d;
+}
+
+.decision-selected-reject {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+  color: #b91c1c;
+}
+
+.rejection-alert-box {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.rejection-alert-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.rejection-alert-header h4 {
+  margin: 0;
+  color: #991b1b;
+  font-size: 0.95rem;
+}
+
+.rejection-reason-text {
+  margin: 0 0 6px 0;
+  color: #b91c1c;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.rejection-reviewer-meta {
+  font-size: 0.775rem;
+  color: #7f1d1d;
+}
+
+.approvals-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.approval-history-card {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+
+.approval-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.approval-notes-box {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.notes-label {
+  font-weight: 600;
+  font-size: 0.775rem;
+  color: #64748b;
+  display: block;
+}
+
+.approval-notes-box p {
+  margin: 2px 0 0 0;
+}
+
+.approval-decision-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+.decision-box-approved {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.decision-box-rejected {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.decision-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.decision-reason {
+  margin: 4px 0 0 0;
+  line-height: 1.4;
+}

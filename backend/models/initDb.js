@@ -36,8 +36,30 @@ async function initDatabase() {
             await pool.query("ALTER TABLE documents ADD COLUMN version INT NOT NULL DEFAULT 1");
             console.log("[db-init] Added 'version' column to documents.");
         }
+        if (!docColNames.includes("approval_status")) {
+            await pool.query("ALTER TABLE documents ADD COLUMN approval_status VARCHAR(20) NOT NULL DEFAULT 'DRAFT'");
+            console.log("[db-init] Added 'approval_status' column to documents.");
+        }
 
-        // 3. Categories table
+        // 3. Document approvals table
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS document_approvals (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                document_id INT NOT NULL,
+                submitted_by INT NOT NULL,
+                reviewed_by INT NULL,
+                status ENUM('PENDING', 'APPROVED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+                comments TEXT NULL,
+                rejection_reason TEXT NULL,
+                submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                reviewed_at TIMESTAMP NULL,
+                FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
+                FOREIGN KEY (submitted_by) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        `);
+
+        // 4. Categories table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS categories (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -48,7 +70,7 @@ async function initDatabase() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `);
 
-        // 4. Tags table
+        // 5. Tags table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS tags (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -57,7 +79,7 @@ async function initDatabase() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `);
 
-        // 5. Document tags junction table
+        // 6. Document tags junction table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS document_tags (
                 document_id INT NOT NULL,
@@ -68,7 +90,7 @@ async function initDatabase() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `);
 
-        // 6. Document shares
+        // 7. Document shares
         await pool.query(`
             CREATE TABLE IF NOT EXISTS document_shares (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -85,7 +107,7 @@ async function initDatabase() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `);
 
-        // 7. Document versions
+        // 8. Document versions
         await pool.query(`
             CREATE TABLE IF NOT EXISTS document_versions (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -103,7 +125,7 @@ async function initDatabase() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `);
 
-        // 8. Document comments
+        // 9. Document comments
         await pool.query(`
             CREATE TABLE IF NOT EXISTS document_comments (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -119,7 +141,7 @@ async function initDatabase() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `);
 
-        // 9. Activity logs
+        // 10. Activity logs
         await pool.query(`
             CREATE TABLE IF NOT EXISTS activity_logs (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -132,7 +154,7 @@ async function initDatabase() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `);
 
-        // 10. Audit logs
+        // 11. Audit logs
         await pool.query(`
             CREATE TABLE IF NOT EXISTS audit_logs (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -148,7 +170,7 @@ async function initDatabase() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         `);
 
-        // 11. Seed default categories if empty
+        // 12. Seed default categories if empty
         const [catCount] = await pool.query("SELECT COUNT(*) as count FROM categories");
         if (catCount[0].count === 0) {
             const defaultCats = [

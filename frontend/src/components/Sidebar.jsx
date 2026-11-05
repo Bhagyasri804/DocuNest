@@ -8,16 +8,18 @@ import {
   Users, 
   ShieldCheck, 
   Plus,
-  Clock
+  Clock,
+  FileCheck
 } from "./icons";
 
-export function Sidebar({ currentView, setCurrentView, user, onOpenUpload, isOpen, onCloseMobile }) {
+export function Sidebar({ currentView, setCurrentView, user, onOpenUpload, isOpen, onCloseMobile, pendingCount = 0 }) {
   const isAdmin = user?.role === "ADMIN";
   const isManager = user?.role === "MANAGER" || isAdmin;
 
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
     { id: "documents", label: "All Documents", icon: FileText },
+    ...(isManager ? [{ id: "approvals", label: "Approvals", icon: FileCheck, count: pendingCount }] : []),
     { id: "shared", label: "Shared With Me", icon: Share2 },
     { id: "categories", label: "Categories", icon: FolderOpen },
     { id: "analytics", label: "Analytics", icon: BarChart3 },
@@ -53,7 +55,10 @@ export function Sidebar({ currentView, setCurrentView, user, onOpenUpload, isOpe
                 onClick={() => handleNavClick(item.id)}
               >
                 <Icon size={18} />
-                <span>{item.label}</span>
+                <span style={{ flex: 1 }}>{item.label}</span>
+                {item.count > 0 && (
+                  <span className="sidebar-count-badge">{item.count}</span>
+                )}
               </button>
             );
           })}
