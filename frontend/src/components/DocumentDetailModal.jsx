@@ -19,6 +19,7 @@ import {
   SendHorizontal
 } from "./icons";
 import { api } from "../api";
+import { formatFileSize } from "../utils/formatFileSize";
 
 export function DocumentDetailModal({ 
   isOpen, 
@@ -226,7 +227,7 @@ export function DocumentDetailModal({
                   </div>
                   <div className="meta-box">
                     <span className="meta-label">File Size</span>
-                    <span className="meta-value">{(doc.file_size / (1024 * 1024)).toFixed(2)} MB</span>
+                    <span className="meta-value">{formatFileSize(doc.file_size)}</span>
                   </div>
                   <div className="meta-box">
                     <span className="meta-label">Uploaded By</span>

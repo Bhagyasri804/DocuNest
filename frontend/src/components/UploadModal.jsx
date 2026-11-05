@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Upload, X, AlertTriangle, FileText } from "./icons";
 import { api } from "../api";
+import { formatFileSize } from "../utils/formatFileSize";
 
 export function UploadModal({ isOpen, onClose, categories = [], onSuccess, onError }) {
   const [file, setFile] = useState(null);
@@ -100,7 +101,7 @@ export function UploadModal({ isOpen, onClose, categories = [], onSuccess, onErr
                 <FileText size={32} color="#2563eb" />
                 <div className="selected-file-text">
                   <span className="file-name">{file.name}</span>
-                  <span className="file-size">{(file.size / (1024 * 1024)).toFixed(2)} MB</span>
+                  <span className="file-size">{formatFileSize(file.size)}</span>
                 </div>
                 <button
                   type="button"
