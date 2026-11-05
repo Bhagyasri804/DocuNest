@@ -1,4 +1,5 @@
 import { FolderOpen, LogOut, Menu, X } from "./icons";
+import { getUserInitials } from "../utils/userInitials";
 
 export function Navbar({ user, onLogout, onOpenProfile, onToggleSidebar, isSidebarOpen }) {
   const getRoleBadgeClass = (role) => {
@@ -38,7 +39,7 @@ export function Navbar({ user, onLogout, onOpenProfile, onToggleSidebar, isSideb
           <div className="navbar-user-section">
             <button className="navbar-user-profile" onClick={onOpenProfile} title="Account Settings">
               <div className="user-avatar">
-                {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                {getUserInitials(user.name)}
               </div>
               <div className="user-info-text">
                 <span className="user-name">{user.name}</span>

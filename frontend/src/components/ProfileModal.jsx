@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { User, X, Key, ShieldCheck, CheckCircle2, AlertTriangle } from "./icons";
 import { PasswordInput } from "./PasswordInput";
 import { api, setCurrentUser } from "../api";
+import { getUserInitials } from "../utils/userInitials";
 
 export function ProfileModal({ isOpen, user, onClose, onUserUpdated, onSuccess, onError }) {
   const [name, setName] = useState(user?.name || "");
@@ -70,7 +71,7 @@ export function ProfileModal({ isOpen, user, onClose, onUserUpdated, onSuccess, 
 
         <div className="profile-badge-summary">
           <div className="profile-large-avatar">
-            {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+            {getUserInitials(user?.name)}
           </div>
           <div className="profile-summary-text">
             <h4>{user?.name}</h4>
