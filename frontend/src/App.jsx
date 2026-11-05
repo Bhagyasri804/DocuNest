@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "./App.css";
 import { 
   Search, 
@@ -58,6 +58,32 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
   const [onlyFavorites, setOnlyFavorites] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortOrder, setSortOrder] = useState("newest");
+
+  const sortedDocuments = useMemo(() => {
+    return documents
+      .map((document, index) => ({
+        document,
+        index,
+        timestamp: Date.parse(document.created_at),
+      }))
+      .sort((a, b) => {
+        const aHasValidDate = Number.isFinite(a.timestamp);
+        const bHasValidDate = Number.isFinite(b.timestamp);
+
+        if (aHasValidDate !== bHasValidDate) {
+          return aHasValidDate ? -1 : 1;
+        }
+        if (!aHasValidDate || a.timestamp === b.timestamp) {
+          return a.index - b.index;
+        }
+
+        return sortOrder === "newest"
+          ? b.timestamp - a.timestamp
+          : a.timestamp - b.timestamp;
+      })
+      .map(({ document }) => document);
+  }, [documents, sortOrder]);
 
   // Modals state
   const [uploadOpen, setUploadOpen] = useState(false);
@@ -282,6 +308,19 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                   />
                 </div>
 
+                <div className="filter-select-wrap">
+                  <label className="filter-label" htmlFor="dashboard-sort-order">Sort by:</label>
+                  <select
+                    id="dashboard-sort-order"
+                    className="form-select form-select-sm"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                  >
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                  </select>
+                </div>
+
                 <div className="category-chips-row">
                   <button
                     className={`cat-chip ${selectedCategory === "All" ? "active" : ""}`}
@@ -322,7 +361,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
               ) : (
                 <>
                   <div className="documents-grid">
-                    {documents.map((doc) => (
+                    {sortedDocuments.map((doc) => (
                       <DocumentCard
                         key={doc.id}
                         doc={doc}
@@ -376,6 +415,18 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                   />
                 </div>
                 <div className="filter-select-wrap">
+                  <label className="filter-label" htmlFor="documents-sort-order">Sort by:</label>
+                  <select
+                    id="documents-sort-order"
+                    className="form-select form-select-sm"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                  >
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                  </select>
+                </div>
+                <div className="filter-select-wrap">
                   <label className="filter-label">Category:</label>
                   <select
                     className="form-select form-select-sm"
@@ -407,7 +458,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
               ) : (
                 <>
                   <div className="documents-grid">
-                    {documents.map((doc) => (
+                    {sortedDocuments.map((doc) => (
                       <DocumentCard
                         key={doc.id}
                         doc={doc}
