@@ -1918,6 +1918,11 @@ body {
   text-align: center;
 }
 
+.sidebar-count-badge-approvals {
+  background-color: #f97316;
+  color: #ffffff;
+}
+
 .approval-modal-doc-summary {
   background-color: #f8fafc;
   border: 1px solid #e2e8f0;

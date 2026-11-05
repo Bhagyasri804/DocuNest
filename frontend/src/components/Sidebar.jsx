@@ -57,7 +57,9 @@ export function Sidebar({ currentView, setCurrentView, user, onOpenUpload, isOpe
                 <Icon size={18} />
                 <span style={{ flex: 1 }}>{item.label}</span>
                 {item.count > 0 && (
-                  <span className="sidebar-count-badge">{item.count}</span>
+                  <span className={`sidebar-count-badge ${item.id === "approvals" && user?.role === "MANAGER" ? "sidebar-count-badge-approvals" : ""}`}>
+                    {item.count}
+                  </span>
                 )}
               </button>
             );
