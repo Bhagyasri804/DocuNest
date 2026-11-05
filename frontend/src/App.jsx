@@ -11,7 +11,8 @@ import {
   Filter, 
   AlertTriangle,
   Clock,
-  FileCheck
+  FileCheck,
+  ArrowUp
 } from "./components/icons";
 import { Router, Routes, Route, useNavigate, useLocation } from "./router";
 import { api, getCurrentUser, setCurrentUser, setToken } from "./api";
@@ -45,6 +46,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const closeSidebar = useCallback(() => {
     setSidebarOpen(false);
     document.getElementById("navbar-menu-btn")?.focus();
@@ -62,6 +64,16 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
     closeSidebarOnDesktop();
     desktopMediaQuery.addEventListener("change", closeSidebarOnDesktop);
     return () => desktopMediaQuery.removeEventListener("change", closeSidebarOnDesktop);
+  }, []);
+
+  useEffect(() => {
+    const updateBackToTopVisibility = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+
+    updateBackToTopVisibility();
+    window.addEventListener("scroll", updateBackToTopVisibility, { passive: true });
+    return () => window.removeEventListener("scroll", updateBackToTopVisibility);
   }, []);
   
   // Data state
@@ -665,6 +677,16 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
       />
 
       <Toast toast={toast} onClose={() => setToast(null)} />
+      {showBackToTop && (
+        <button
+          type="button"
+          className="back-to-top"
+          aria-label="Back to top"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <ArrowUp size={20} />
+        </button>
+      )}
     </div>
   );
 }
