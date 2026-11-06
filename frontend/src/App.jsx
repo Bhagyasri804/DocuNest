@@ -238,6 +238,34 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
     window.open(api.getDownloadUrl(doc.id), "_blank");
   };
 
+  const handleCopyDocumentName = async (doc) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(doc.title);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = doc.title;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+          if (!document.execCommand("copy")) {
+            throw new Error("Clipboard copy command was rejected.");
+          }
+        } finally {
+          textArea.remove();
+        }
+      }
+
+      showSuccess("Document name copied!");
+    } catch {
+      showError("Could not copy the document name. Check clipboard permissions and try again.");
+    }
+  };
+
   const closeDocumentDetail = () => {
     setActiveDetailDocId(null);
     if (linkedDocumentId) {
@@ -421,6 +449,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                         currentUser={currentUser}
                         onView={(d) => setActiveDetailDocId(d.id)}
                         onDownload={handleDownload}
+                        onCopyName={handleCopyDocumentName}
                         onEdit={(d) => setEditDoc(d)}
                         onShare={(d) => setActiveShareDoc(d)}
                         onVersions={(d) => setActiveVersionDoc(d)}
@@ -528,6 +557,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                         currentUser={currentUser}
                         onView={(d) => setActiveDetailDocId(d.id)}
                         onDownload={handleDownload}
+                        onCopyName={handleCopyDocumentName}
                         onEdit={(d) => setEditDoc(d)}
                         onShare={(d) => setActiveShareDoc(d)}
                         onVersions={(d) => setActiveVersionDoc(d)}
@@ -585,6 +615,7 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
                       currentUser={currentUser}
                       onView={(d) => setActiveDetailDocId(d.id)}
                       onDownload={handleDownload}
+                      onCopyName={handleCopyDocumentName}
                       onEdit={(d) => setEditDoc(d)}
                       onShare={(d) => setActiveShareDoc(d)}
                       onVersions={(d) => setActiveVersionDoc(d)}

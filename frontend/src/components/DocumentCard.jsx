@@ -12,6 +12,7 @@ import {
   Calendar, 
   User, 
   HardDrive,
+  Copy,
   SendHorizontal,
   CheckCircle,
   XCircle,
@@ -42,6 +43,7 @@ export function DocumentCard({
   onVersions,
   onToggleFavorite,
   onDownload,
+  onCopyName,
   onSubmitApproval,
   onReviewApproval
 }) {
@@ -91,7 +93,19 @@ export function DocumentCard({
 
       <div className="doc-card-body" onClick={() => onView(doc)}>
         <h4 className="doc-title" title={doc.title}>
-          {doc.title}
+          <span className="doc-title-text">{doc.title}</span>
+          <button
+            type="button"
+            className="btn-icon doc-title-copy"
+            title="Copy document name"
+            aria-label="Copy document name"
+            onClick={(event) => {
+              event.stopPropagation();
+              onCopyName(doc);
+            }}
+          >
+            <Copy size={14} />
+          </button>
         </h4>
         {doc.description && (
           <p className="doc-description">{doc.description}</p>
