@@ -733,7 +733,8 @@ function AuthenticatedWorkspace({ currentUser, onUserChange, onLogout }) {
         <button
           type="button"
           className="back-to-top"
-          aria-label="Back to top"
+          aria-label="Scroll to top"
+          title="Scroll to top"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
           <ArrowUp size={20} />
