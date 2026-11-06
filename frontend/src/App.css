@@ -786,9 +786,22 @@ body {
   font-size: 1.05rem;
   font-weight: 600;
   color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.doc-title-text {
+  min-width: 0;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.doc-title-copy {
+  flex-shrink: 0;
+  padding: 4px;
 }
 
 .doc-description {
