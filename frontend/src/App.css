@@ -644,9 +644,9 @@ body {
 }
 
 .cat-fav-chip.active {
-  background-color: #16a34a;
-  border-color: #16a34a;
-  color: #ffffff;
+  background-color: #FACC15;
+  border-color: #FACC15;
+  color: #1f2937;
 }
 
 .expiring-alert-card {
